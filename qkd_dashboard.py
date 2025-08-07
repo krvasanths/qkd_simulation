@@ -35,6 +35,29 @@ agent = DQNAgent(state_size, action_size)
 agent.load_state_dict(torch.load("dqn_agent_gnn_integrated.pth"))
 agent.eval()
 
+def build_graph_from_gpickle(gpickle_path="qkd_topology.gpickle", agent=None):
+    G = nx.read_gpickle(gpickle_path)
+    for u, v, data in G.edges(data=True):
+        # Build edge feature vector
+        edge_feat = torch.tensor([
+            data.get("distance_km", 0),
+            data.get("eta_ch", 0),
+            data.get("qber", 0),
+            data.get("key_rate", 0)
+        ], dtype=torch.float32)
+
+        if agent:
+            with torch.no_grad():
+                q_vals = agent(edge_feat)
+                secure_prob = F.softmax(q_vals, dim=0)[1].item()  # Class 1 = secure
+        else:
+            secure_prob = 0.5  # default probability
+
+        data["edge_feat"] = edge_feat
+        data["secure_score"] = secure_prob
+
+    return G
+    
 # Build networkx graph
 def build_graph(edge_index, edge_features):
     G = nx.Graph()
@@ -51,7 +74,7 @@ def build_graph(edge_index, edge_features):
 # Find most secure path (maximize security scores)
 def find_secure_path(G, source, target, eavesdrop=False):
     edge_weights = {
-        (u, v): (1 - G[u][v]['secure_score']) if not eavesdrop else (1 + G[u][v]['secure_score'] * 0.5)
+        (u, v): (1 - G[u][v]['secure_score']) if not eavesdrop else (1 - G[u][v]['secure_score'] * 0.5)
         for u, v in G.edges()
     }
     st.success(edge_weights)
@@ -74,7 +97,8 @@ with col2:
 eavesdrop = st.toggle("Simulate Eavesdropping", value=False)
 
 # Build graph and path
-G = build_graph(edge_index, edge_features)
+# G = build_graph(edge_index, edge_features)
+G = build_graph_from_gpickle()
 path = find_secure_path(G, source, target, eavesdrop)
 
 # Plot
