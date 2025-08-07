@@ -12,16 +12,14 @@ from torch.nn import functional as F
 class DQNAgent(nn.Module):
     def __init__(self, state_size, action_size, hidden_size=32):
         super(DQNAgent, self).__init__()
-        self.model = nn.Sequential(
-            nn.Linear(state_size, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, action_size)
-        )
+        self.fc1 = nn.Linear(state_size, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, hidden_size)
+        self.out = nn.Linear(hidden_size, action_size)
 
     def forward(self, x):
-        return self.model(x)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        return self.out(x)
 
 # Load edge features and topology
 edge_features = np.load("edge_features.npy")
@@ -33,9 +31,9 @@ with open("qkd_topology.gpickle", "rb") as f:
 edge_attr_tensor = torch.tensor(edge_features, dtype=torch.float32)
 
 # Load trained model
-agent = DQNAgent(state_size=edge_features.shape[1], action_size=2)
-agent.load_state_dict(torch.load("dqn_agent_gnn_integrated.pth"))
-agent.eval()
+dqn_agent = DQNAgent(state_size, action_size)
+dqn_agent.load_state_dict(torch.load("dqn_agent_gnn_integrated.pth"))
+dqn_agent.eval()
 
 # ---------------- Streamlit Dashboard ----------------
 st.set_page_config(layout="wide")
