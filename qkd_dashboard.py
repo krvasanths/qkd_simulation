@@ -54,7 +54,7 @@ for u, v in G.edges():
         st.write(u)
         st.write(v)
         st.write(G[u][v]['qber'])
-        G[u][v]['qber'] = min(1.0, G[u][v]['qber'] + 0.1)
+        G[u][v]['qber'] = max(1.0, G[u][v]['qber'] + 0.1)
         st.write(G[u][v]['qber'])
     else:
         original_qber = G[u][v].get('original_qber', G[u][v]['qber'])
