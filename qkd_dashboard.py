@@ -118,7 +118,7 @@ pos = nx.spring_layout(G, seed=42)
 edge_colors = []
 edge_widths = []
 for u, v, data in G.edges(data=True):
-    idx = data["index"]
+    #idx = data["index"]
     if path and (u, v) in zip(path, path[1:]) or (v, u) in zip(path, path[1:]):
         edge_colors.append("green")
         edge_widths.append(3)
