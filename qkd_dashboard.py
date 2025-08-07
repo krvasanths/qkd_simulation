@@ -51,7 +51,7 @@ def build_graph(edge_index, edge_features):
 # Find most secure path (maximize security scores)
 def find_secure_path(G, source, target, eavesdrop=False):
     edge_weights = {
-        (u, v): (1 - G[u][v]['secure_score']) if not eavesdrop else (1 - G[u][v]['secure_score'] * 0.5)
+        (u, v): (1 - G[u][v]['secure_score']) if not eavesdrop else (1 + G[u][v]['secure_score'] * 0.5)
         for u, v in G.edges()
     }
     nx.set_edge_attributes(G, edge_weights, "weight")
