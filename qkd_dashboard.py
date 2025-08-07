@@ -74,7 +74,7 @@ for u, v in G.edges():
         edge_colors.append("red")
 
 # Path finding on secure edges only
-secure_G = G.edge_subgraph([e for e in G.edges() if edge_security.get(e, 0) == 1]).copy()
+secure_G = G.edge_subgraph([e for e in G.edges() if edge_security.get(e, 0) == 0]).copy()
 try:
     path = nx.shortest_path(secure_G, source=source, target=target)
 except nx.NetworkXNoPath:
