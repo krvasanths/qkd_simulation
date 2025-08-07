@@ -6,6 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from collections import defaultdict
+import pickle
 
 # Define DQN model
 class DQNAgent(nn.Module):
