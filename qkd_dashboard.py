@@ -61,7 +61,7 @@ edge_security = {}
 with torch.no_grad():
     for idx, (u, v) in enumerate(G.edges()):
         edge_feat = edge_attr_tensor[idx]
-        q_vals = agent(edge_feat)
+        q_vals = dqn_agent(edge_feat)
         action = torch.argmax(q_vals).item()
         edge_security[(u, v)] = action  # 0: Insecure, 1: Secure
 
