@@ -56,7 +56,7 @@ for u, v in G.edges():
         original_qber = G[u][v].get('original_qber', G[u][v]['qber'])
         G[u][v]['qber'] = original_qber
 
-print(G)
+st.write(G)
 # Predict edge security using DQN agent
 edge_security = {}
 with torch.no_grad():
