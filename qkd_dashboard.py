@@ -30,6 +30,9 @@ with open("qkd_topology.gpickle", "rb") as f:
 
 edge_attr_tensor = torch.tensor(edge_features, dtype=torch.float32)
 
+state_size = edge_features.shape[1]  # number of edge features per edge
+action_size = 2  # {0: insecure, 1: secure}
+
 # Load trained model
 dqn_agent = DQNAgent(state_size, action_size)
 dqn_agent.load_state_dict(torch.load("dqn_agent_gnn_integrated.pth"))
