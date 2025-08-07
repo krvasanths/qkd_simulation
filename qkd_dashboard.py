@@ -51,12 +51,15 @@ eavesdrop = st.sidebar.toggle("💀 Simulate Eavesdropping")
 # Recalculate QBER if eavesdrop enabled
 for u, v in G.edges():
     if eavesdrop:
+        st.write(u)
+        st.write(v)
+        st.write(G[u][v]['qber'])
         G[u][v]['qber'] = min(1.0, G[u][v]['qber'] + 0.1)
+        st.write(G[u][v]['qber'])
     else:
         original_qber = G[u][v].get('original_qber', G[u][v]['qber'])
         G[u][v]['qber'] = original_qber
 
-st.write(G)
 # Predict edge security using DQN agent
 edge_security = {}
 with torch.no_grad():
