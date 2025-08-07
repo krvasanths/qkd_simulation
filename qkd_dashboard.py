@@ -54,6 +54,7 @@ def find_secure_path(G, source, target, eavesdrop=False):
         (u, v): (1 - G[u][v]['secure_score']) if not eavesdrop else (1 + G[u][v]['secure_score'] * 0.5)
         for u, v in G.edges()
     }
+    st.success(edge_weights)
     nx.set_edge_attributes(G, edge_weights, "weight")
     try:
         return nx.shortest_path(G, source=source, target=target, weight="weight")
