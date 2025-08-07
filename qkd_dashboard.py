@@ -35,8 +35,12 @@ agent = DQNAgent(state_size, action_size)
 agent.load_state_dict(torch.load("dqn_agent_gnn_integrated.pth"))
 agent.eval()
 
+def read_gpickle(gpickle_path="qkd_topology.gpickle"):
+    with open(gpickle_path, "rb") as f:
+        return pickle.load(f)
+
 def build_graph_from_gpickle(gpickle_path="qkd_topology.gpickle", agent=None):
-    G = nx.read_gpickle(gpickle_path)
+    G = read_gpickle(gpickle_path)
     for u, v, data in G.edges(data=True):
         # Build edge feature vector
         edge_feat = torch.tensor([
